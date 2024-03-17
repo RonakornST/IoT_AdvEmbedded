@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "temp_sht4x": {
+      "operation": {
+        "store": {
+          "ttl": "30d"
+        }
+      },
+      "type": "number"
+    },
+    "humid_sht4x": {
+      "operation": {
+        "store": {
+          "ttl": "30d"
+        }
+      },
+      "type": "number"
+    },
+    "temp_bmp280": {
+      "operation": {
+        "store": {
+          "ttl": "30d"
+        }
+      },
+      "type": "number"
+    },
+    "pressure_bmp280": {
+      "operation": {
+        "store": {
+          "ttl": "30d"
+        }
+      },
+      "type": "number"
+    }
+  }
+}
