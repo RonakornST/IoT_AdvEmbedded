@@ -167,46 +167,40 @@ void webServerTask(void *parameter) {
       String request = client.readStringUntil('\r');
       client.flush();
 
-      // Get the current time
-      if (getLocalTime(&timeinfo)) {
-        char timeString[20];
-        sprintf(timeString, "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+      // Format the time correctly using sprintf
+      char formattedTime[9]; // HH:MM:SS
+      sprintf(formattedTime, "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
 
-        // Prepare HTML response with CSS for better styling
-        String response = "<!DOCTYPE html><html><head>";
-        response += "<style>";
-        response += "body { font-family: Arial, sans-serif; background-color: #f0f0f0; color: #333; text-align: center; padding: 20px; }";
-        response += "h1 { color: #0066cc; }";
-        response += ".sensor-data { background-color: #fff; padding: 20px; margin: 20px auto; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); max-width: 600px; }";
-        response += "p { font-size: 18px; }";
-        response += ".timestamp { font-size: 16px; color: #777; }";
-        response += "</style>";
-        response += "</head><body>";
+      // Prepare HTML response
+      String response = "<!DOCTYPE html><html lang='en'>";
+      response += "<head>";
+      response += "<meta charset='UTF-8'>";
+      response += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+      response += "<title>Sensor Data</title>";
+      response += "<style>";
+      response += "body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 20px; }";
+      response += "h1 { color: #333; }";
+      response += "p { font-size: 18px; color: #555; }";
+      response += ".sensor { background-color: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin-bottom: 10px; }";
+      response += "</style>";
+      response += "</head>";
+      response += "<body>";
+      response += "<h1>Sensor Data</h1>";
+      response += "<div class='sensor'><p><strong>Last Update:</strong> " + String(formattedTime) + "</p></div>";
+      response += "<div class='sensor'><p><strong>SHT4X Temperature:</strong> " + String(temp_sht4x) + " °C</p></div>";
+      response += "<div class='sensor'><p><strong>SHT4X Humidity:</strong> " + String(humid_sht4x) + " %</p></div>";
+      response += "<div class='sensor'><p><strong>BMP280 Temperature:</strong> " + String(temp_bmp280) + " °C</p></div>";
+      response += "<div class='sensor'><p><strong>BMP280 Pressure:</strong> " + String(pressure_bmp280) + " hPa</p></div>";
+      response += "<div class='sensor'><p><strong>MPU6050 Acceleration:</strong> X=" + String(accX) + " m/s², Y=" + String(accY) + " m/s², Z=" + String(accZ) + " m/s²</p></div>";
+      response += "<div class='sensor'><p><strong>MPU6050 Gyroscope:</strong> X=" + String(gyroX) + " rad/s, Y=" + String(gyroY) + " rad/s, Z=" + String(gyroZ) + " rad/s</p></div>";
+      response += "<div class='sensor'><p><strong>MPU6050 Temperature:</strong> " + String(temp_mpu6050) + " °C</p></div>";
+      response += "</body></html>";
 
-        // Add title and sensor data in HTML
-        response += "<h1>Sensor Data</h1>";
-        response += "<div class='sensor-data'>";
-        response += "<p class='timestamp'>Last Update: " + String(timeString) + "</p>";
-        response += "<p><strong>SHT4X Temperature:</strong> " + String(temp_sht4x) + " °C</p>";
-        response += "<p><strong>SHT4X Humidity:</strong> " + String(humid_sht4x) + " %</p>";
-        response += "<p><strong>BMP280 Temperature:</strong> " + String(temp_bmp280) + " °C</p>";
-        response += "<p><strong>BMP280 Pressure:</strong> " + String(pressure_bmp280) + " hPa</p>";
-        response += "<p><strong>MPU6050 Acceleration:</strong> X=" + String(accX) + " m/s², Y=" + String(accY) + " m/s², Z=" + String(accZ) + " m/s²</p>";
-        response += "<p><strong>MPU6050 Gyroscope:</strong> X=" + String(gyroX) + " rad/s, Y=" + String(gyroY) + " rad/s, Z=" + String(gyroZ) + " rad/s</p>";
-        response += "<p><strong>MPU6050 Temperature:</strong> " + String(temp_mpu6050) + " °C</p>";
-        response += "</div>";
-
-        response += "</body></html>";
-
-        // Send the HTTP response
-        client.print("HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n");
-        client.print(response);
-      } else {
-        Serial.println("Failed to obtain time");
-      }
+      client.print("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n");
+      client.print(response);
       client.stop();
     }
-    vTaskDelay(pdMS_TO_TICKS(100)); // Check for client every 0.1 second
+    vTaskDelay(pdMS_TO_TICKS(100)); // Check for client every 0.1 seconds
   }
 }
 
@@ -308,9 +302,6 @@ void setup() {
     Serial.println("5 Hz");
     break;
   }
-
-  // Create a queue to hold sensor data messages
-  sensorDataQueue = xQueueCreate(10, sizeof(char[200])); // queue can hold up to 10 items, each item being a character array of size 200 bytes.
 
   setup_wifi();
 
