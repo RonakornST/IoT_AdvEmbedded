@@ -8,7 +8,7 @@
 
 // setup wifi
 const char* ssid      = "Ronakorn_2.4G";      //ต้องแก้ไข
-const char* password  = "---";      //ต้องแก้ไข
+const char* password  = "chen2023";      //ต้องแก้ไข
 
 // Set your static IP address and gateway
 IPAddress local_IP(192, 168, 0, 99); // Static IP
@@ -192,7 +192,7 @@ void webServerTask(void *parameter) {
       response += "<div class='sensor'><p><strong>BMP280 Temperature:</strong> " + String(temp_bmp280) + " °C</p></div>";
       response += "<div class='sensor'><p><strong>BMP280 Pressure:</strong> " + String(pressure_bmp280) + " hPa</p></div>";
       response += "<div class='sensor'><p><strong>MPU6050 Acceleration:</strong> X=" + String(accX) + " m/s², Y=" + String(accY) + " m/s², Z=" + String(accZ) + " m/s²</p></div>";
-      response += "<div class='sensor'><p><strong>MPU6050 Gyroscope:</strong> X=" + String(gyroX) + " °/s, Y=" + String(gyroY) + " °/s, Z=" + String(gyroZ) + " °/s</p></div>";
+      response += "<div class='sensor'><p><strong>MPU6050 Gyroscope:</strong> X=" + String(gyroX) + " rad/s, Y=" + String(gyroY) + " rad/s, Z=" + String(gyroZ) + " rad/s</p></div>";
       response += "<div class='sensor'><p><strong>MPU6050 Temperature:</strong> " + String(temp_mpu6050) + " °C</p></div>";
       response += "</body></html>";
 
@@ -200,7 +200,7 @@ void webServerTask(void *parameter) {
       client.print(response);
       client.stop();
     }
-    vTaskDelay(pdMS_TO_TICKS(10000)); // Check for client every 10 seconds
+    vTaskDelay(pdMS_TO_TICKS(100)); // Check for client every 0.1 seconds
   }
 }
 
@@ -302,9 +302,6 @@ void setup() {
     Serial.println("5 Hz");
     break;
   }
-
-  // Create a queue to hold sensor data messages
-  sensorDataQueue = xQueueCreate(10, sizeof(char[200])); // queue can hold up to 10 items, each item being a character array of size 200 bytes.
 
   setup_wifi();
 
