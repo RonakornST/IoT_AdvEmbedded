@@ -8,7 +8,7 @@
 
 // setup wifi
 const char* ssid      = "Ronakorn_2.4G";      //ต้องแก้ไข
-const char* password  = "chen2023";      //ต้องแก้ไข
+const char* password  = "";      //ต้องแก้ไข
 
 // Set your static IP address and gateway
 IPAddress local_IP(192, 168, 0, 99); // Static IP
