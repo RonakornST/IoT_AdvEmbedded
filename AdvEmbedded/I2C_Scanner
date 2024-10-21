@@ -1,7 +1,7 @@
 // I2C Scanner
 // Written by Nick Gammon
 // Date: 20th April 2011
-
+// config pin for cumcumber board with wire.h
 #include <Wire.h>
 
 void setup() {
