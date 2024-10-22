@@ -1,12 +1,10 @@
-#include <Arduino.h>
 #include <WiFi.h>
 #include <Wire.h>
 #include "PubSubClient.h"
 #include <time.h>
 #include "Adafruit_SHT4x.h"
 #include <Adafruit_BMP280.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+
 
 //Topic การเขียนข้อมูล Shadow
 #define UPDATEDATA   "@shadow/data/update"
