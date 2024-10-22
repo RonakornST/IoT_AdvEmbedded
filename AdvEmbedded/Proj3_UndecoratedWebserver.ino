@@ -211,7 +211,7 @@ void setup() {
   }
 
   // setup for bmp280
-  if (!bmp280.begin()) {
+  if (!bmp280.begin(0x76)) {
     Serial.println("Failed to initialize BMP280 sensor!");
     while (1);
   }
