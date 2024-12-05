@@ -1,0 +1,137 @@
+<!-- index.html -->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ESP32 Sensors</title>
+    <!-- Custom CSS -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #eef2f7;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px 0;
+        text-align: center;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 20px auto;
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .sensor-card {
+        background: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        flex: 1;
+        min-width: 250px;
+        max-width: 300px;
+        text-align: center;
+      }
+      .sensor-card h2 {
+        margin-bottom: 15px;
+        color: #007BFF;
+      }
+      .sensor-value {
+        font-size: 1.2em;
+        margin: 5px 0;
+        font-weight: bold;
+        color: #333;
+      }
+      .sensor-label {
+        font-size: 0.9em;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>ESP32 Sensor Readings</h1>
+    </div>
+    <div class="container">
+      <div class="sensor-card" id="bmp280">
+        <h2>BMP280</h2>
+        <div>
+          <div class="sensor-value" id="temp_bmp">-</div>
+          <div class="sensor-label">Temperature (°C)</div>
+        </div>
+        <div>
+          <div class="sensor-value" id="pressure_bmp">-</div>
+          <div class="sensor-label">Pressure (hPa)</div>
+        </div>
+      </div>
+      <div class="sensor-card" id="mpu6050">
+        <h2>MPU6050</h2>
+        <div>
+          <div class="sensor-value" id="temp_mpu">-</div>
+          <div class="sensor-label">Temperature (°C)</div>
+        </div>
+        <div>
+          <div class="sensor-value">
+            <span id="ax">-</span>, <span id="ay">-</span>, <span id="az">-</span>
+          </div>
+          <div class="sensor-label">Acceleration (m/s²)</div>
+        </div>
+        <div>
+          <div class="sensor-value">
+            <span id="gx">-</span>, <span id="gy">-</span>, <span id="gz">-</span>
+          </div>
+          <div class="sensor-label">Gyroscope (°/s)</div>
+        </div>
+      </div>
+      <div class="sensor-card" id="sht4x">
+        <h2>SHT4x</h2>
+        <div>
+          <div class="sensor-value" id="temp_sht4">-</div>
+          <div class="sensor-label">Temperature (°C)</div>
+        </div>
+        <div>
+          <div class="sensor-value" id="humid_sht4">-</div>
+          <div class="sensor-label">Humidity (%)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      function fetchSensorData() {
+        console.log('Fetching sensor data...');
+        fetch('/sensor')
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Fetched data:', data);
+
+            // Update BMP280
+            document.getElementById('temp_bmp').innerText = data.temp_bmp || '-';
+            document.getElementById('pressure_bmp').innerText = data.pressure_bmp || '-';
+
+            // Update MPU6050
+            document.getElementById('temp_mpu').innerText = data.temp_mpu || '-';
+            document.getElementById('ax').innerText = data.ax || '-';
+            document.getElementById('ay').innerText = data.ay || '-';
+            document.getElementById('az').innerText = data.az || '-';
+            document.getElementById('gx').innerText = data.gx || '-';
+            document.getElementById('gy').innerText = data.gy || '-';
+            document.getElementById('gz').innerText = data.gz || '-';
+
+            // Update SHT4x
+            document.getElementById('temp_sht4').innerText = data.temp_sht4 || '-';
+            document.getElementById('humid_sht4').innerText = data.humid_sht4 || '-';
+          })
+          .catch((error) => {
+            console.error('Error fetching sensor data:', error);
+          });
+      }
+
+      // Fetch data periodically
+      setInterval(fetchSensorData, 3000);
+    </script>
+  </body>
+</html>
